@@ -1,0 +1,18 @@
+# Dependências Node.js
+backend/node_modules/
+mobile/node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ambiente
+.env
+*.env
+
+# Cache do Expo/React Native
+.expo/
+.expo-shared/
+dist/
+build/
