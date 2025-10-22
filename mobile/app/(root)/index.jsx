@@ -1,6 +1,6 @@
 import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
 import { Link, useRouter } from 'expo-router'
-import { Alert, FlatList, Image, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SignOutButton } from '@/components/SignOutButton'
 import { useTransactions } from '../../hooks/useTransactions';
 import { useEffect, useState } from 'react';
@@ -10,13 +10,30 @@ import { Ionicons } from "@expo/vector-icons";
 import { BalanceCard } from '../../components/BalanceCard';
 import { TransactionItem } from '../../components/TransactionItem';
 import NoTransactionsFound from '../../components/NoTransactionsFound';
+import { COLORS } from '../../constants/colors';
+
+
+const MONTHS = [
+  { id: 'jan', name: 'Jan' },
+  { id: 'feb', name: 'Feb' },
+  { id: 'mar', name: 'Mar' },
+  { id: 'apr', name: 'Apr' },
+  { id: 'may', name: 'May' },
+  { id: 'jun', name: 'Jun' },
+  { id: 'jul', name: 'Jul' },
+  { id: 'aug', name: 'Aug' },
+  { id: 'sep', name: 'Sep' },
+  { id: 'oct', name: 'Oct' },
+  { id: 'nov', name: 'Nov' },
+  { id: 'dec', name: 'Dec' },
+];
 
 export default function Page() {
   const { user } = useUser();
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
-
-  const { transactions, summary, isLoading, loadData, deleteTransaction } = useTransactions(user.id)
+  const [paramsMonth, setParamsMonth] = useState("");
+  const { transactions, summary, isLoading, loadData, deleteTransaction, filterMonthTransactions } = useTransactions(user.id)
 
 
   const onRefresh = async () => {
@@ -45,6 +62,16 @@ export default function Page() {
   console.log("transactions", transactions);
   console.log("summary", summary);
 
+  const handleMonth = async (month) => {
+    if (paramsMonth === month) {
+      setParamsMonth("");
+      await loadData();
+    } else {
+      setParamsMonth(month);
+      await filterMonthTransactions(user.id, month);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -71,6 +98,29 @@ export default function Page() {
               <SignOutButton/>
           </View>
         </View>
+
+      <ScrollView style={{marginBottom: 10}} horizontal={true} showsHorizontalScrollIndicator={false}>
+        {MONTHS.map((month) => (
+        <View
+          key={month.id}
+          style={[
+            styles.monthButton,
+            paramsMonth === month.id && { backgroundColor: COLORS.primary },
+          ]}
+        >
+          <TouchableOpacity onPress={() => handleMonth(month.id)}>
+            <Text
+              style={[
+                styles.addButtonText,
+                paramsMonth === month.id && { color: 'white' },
+              ]}
+            >
+              {month.name}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ))}
+      </ScrollView>
 
         <BalanceCard summary={summary} />
 

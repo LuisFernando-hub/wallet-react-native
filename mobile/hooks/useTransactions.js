@@ -51,6 +51,16 @@ export const useTransactions = (userId) => {
         }
     }, [fetchTransactions, fetchSummary, userId]);
 
+    const filterMonthTransactions = async (async (userId, month) => {
+        try {
+            const response = await fetch(`${API_URL}/transactions?user_id=${userId}&month=${month}`);
+            const data = await response.json();
+            setTransactions(data.transactions);
+        } catch(error) {
+            console.error("Error fetching transactions:", error);
+        }
+    }, [userId]);
+
     const deleteTransaction = async (id) => {
         try {
             const response = await fetch(`${API_URL}/transactions/${id}`, { method: "DELETE"});
@@ -69,6 +79,7 @@ export const useTransactions = (userId) => {
         summary,
         isLoading,
         loadData,
-        deleteTransaction
+        deleteTransaction,
+        filterMonthTransactions
     }
 }

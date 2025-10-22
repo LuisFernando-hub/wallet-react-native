@@ -3,11 +3,28 @@ import { sql } from "../config/db.js";
 export async function getTransactionsByUserId(req, res) {
     try {
         const {userId} = req.params;
+        const { month } = req.query;
 
-        const transactions = await sql`
-            SELECT * FROM transactions WHERE user_id = ${userId} ORDER BY created_at DESC
-        `
+        let transactions;
 
+        if (month) {
+          // Se o mês for passado, filtra pelo mês de created_at
+          transactions = await sql`
+            SELECT * 
+            FROM transactions 
+            WHERE user_id = ${userId} 
+              AND TO_CHAR(created_at, 'Mon') ILIKE ${month + '%'}
+            ORDER BY created_at DESC
+          `;
+        } else {
+          // Caso contrário, retorna tudo
+          transactions = await sql`
+            SELECT * 
+            FROM transactions 
+            WHERE user_id = ${userId} 
+            ORDER BY created_at DESC
+          `;
+        }
         res.status(200).json(transactions);
 
     } catch (error) {
