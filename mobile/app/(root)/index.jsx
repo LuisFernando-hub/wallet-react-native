@@ -3,7 +3,7 @@ import { Link, useRouter } from 'expo-router'
 import { Alert, FlatList, Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SignOutButton } from '@/components/SignOutButton'
 import { useTransactions } from '../../hooks/useTransactions';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PageLoader from '../../components/PageLoader';
 import { styles } from '../../assets/styles/home.styles';
 import { Ionicons } from "@expo/vector-icons";
@@ -32,8 +32,12 @@ export default function Page() {
   const { user } = useUser();
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
-  const [paramsMonth, setParamsMonth] = useState("");
-  const { transactions, summary, isLoading, loadData, deleteTransaction, filterMonthTransactions } = useTransactions(user.id)
+  const currentMonthIndex = new Date().getMonth();
+
+  console.log(MONTHS[currentMonthIndex].id);
+  const [paramsMonth, setParamsMonth] = useState(MONTHS[currentMonthIndex].id);
+  const { transactions, summary, isLoading, loadData, deleteTransaction, filterMonthTransactions, filterMonthSummary } = useTransactions(user.id)
+  const scrollViewRef = useRef(null);
 
 
   const onRefresh = async () => {
@@ -54,22 +58,21 @@ export default function Page() {
     ]);
   };
 
-
   if(isLoading && !refreshing) return <PageLoader/>
 
 
-  console.log("userId", user.id);
-  console.log("transactions", transactions);
-  console.log("summary", summary);
+  const handleMonth = async (month, index) => {
 
-  const handleMonth = async (month) => {
-    if (paramsMonth === month) {
-      setParamsMonth("");
-      await loadData();
-    } else {
-      setParamsMonth(month);
-      await filterMonthTransactions(user.id, month);
-    }
+    console.log('entrou aqui'+ month);
+    console.log('entrou aqui'+ index);
+    scrollViewRef.current?.scrollTo({ x: index * 90, animated: false });
+
+    if (paramsMonth === month) return;// já selecionado, não faz nada
+
+    setParamsMonth(month);
+    await filterMonthTransactions(month);
+    await filterMonthSummary(month);
+
   }
 
   return (
@@ -99,8 +102,13 @@ export default function Page() {
           </View>
         </View>
 
-      <ScrollView style={{marginBottom: 10}} horizontal={true} showsHorizontalScrollIndicator={false}>
-        {MONTHS.map((month) => (
+      <ScrollView style={{marginBottom: 10}} horizontal={true} showsHorizontalScrollIndicator={false} ref={scrollViewRef}
+        onLayout={() => {
+          const currentMonthIndex = new Date().getMonth();
+          scrollViewRef.current?.scrollTo({ x: currentMonthIndex * 90, animated: false });
+        }}
+      >
+        {MONTHS.map((month, index) => (
         <View
           key={month.id}
           style={[
@@ -108,10 +116,10 @@ export default function Page() {
             paramsMonth === month.id && { backgroundColor: COLORS.primary },
           ]}
         >
-          <TouchableOpacity onPress={() => handleMonth(month.id)}>
+          <TouchableOpacity onPress={() => handleMonth(paramsMonth, index)}>
             <Text
               style={[
-                styles.addButtonText,
+                styles.buttonTextMonth,
                 paramsMonth === month.id && { color: 'white' },
               ]}
             >

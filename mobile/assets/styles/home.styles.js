@@ -77,9 +77,14 @@ export const styles = StyleSheet.create({
     borderRadius: 24,
     flexDirection: "row",
     alignItems: "center",
-  },  
-  addButtonText: {
+  }, 
+  buttonTextMonth: {
     color: COLORS.primary,
+    fontWeight: "600",
+    marginLeft: 4,
+  },
+  addButtonText: {
+    color: COLORS.white,
     fontWeight: "600",
     marginLeft: 4,
   },

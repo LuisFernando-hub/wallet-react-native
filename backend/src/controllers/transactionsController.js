@@ -83,20 +83,37 @@ export async function deleteTransaction(req, res) {
 export async function getSummaryByUserId(req, res) {
     try {
         const {userId} = req.params;
+        const { month } = req.query;
 
-        const balanceResult = await sql`
-            SELECT COALESCE(SUM(amount),0) as balance FROM transactions WHERE user_id = ${userId}
+        let balanceResult = await sql`
+        SELECT COALESCE(SUM(amount),0) as balance FROM transactions WHERE user_id = ${userId}
         `
         
-        const incomeResult = await sql`
+        let incomeResult = await sql`
             SELECT COALESCE(SUM(amount),0) as income FROM transactions
             WHERE user_id = ${userId} AND amount > 0
         `
 
-        const expensesResult = await sql`
+        let expensesResult = await sql`
             SELECT COALESCE(SUM(amount),0) as expenses FROM transactions
             WHERE user_id = ${userId} AND amount < 0
         `
+        
+        if (month) {
+            balanceResult = await sql`
+            SELECT COALESCE(SUM(amount),0) as balance FROM transactions WHERE user_id = ${userId} AND TO_CHAR(created_at, 'Mon') ILIKE ${month + '%'}
+            `
+            
+            incomeResult = await sql`
+                SELECT COALESCE(SUM(amount),0) as income FROM transactions
+                WHERE user_id = ${userId} AND amount > 0 AND TO_CHAR(created_at, 'Mon') ILIKE ${month + '%'}
+            `
+    
+            expensesResult = await sql`
+                SELECT COALESCE(SUM(amount),0) as expenses FROM transactions
+                WHERE user_id = ${userId} AND amount < 0 AND TO_CHAR(created_at, 'Mon') ILIKE ${month + '%'}
+            `
+        }
 
         res.status(200).json({
             balance: balanceResult[0].balance,
