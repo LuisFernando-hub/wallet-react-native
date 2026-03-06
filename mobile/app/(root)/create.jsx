@@ -15,6 +15,7 @@ import {
   import { COLORS } from "../../constants/colors";
   import { Ionicons } from "@expo/vector-icons";
   import { toast } from "sonner";
+import { useTransactions } from "../../hooks/useTransactions";
   
   const CATEGORIES = [
     { id: "food", name: "Food & Drinks", icon: "fast-food" },
@@ -29,7 +30,7 @@ import {
   const CreateScreen = () => {
     const router = useRouter();
     const { user } = useUser();
-  
+    const { loadData } = useTransactions(user.id)
     const [title, setTitle] = useState("");
     const [amount, setAmount] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -74,6 +75,7 @@ import {
   
         toast.success("Transaction created successfully", { position: "top-center" });
         // router.back();
+        await loadData();
         router.push("/");
       } catch (error) {
         toast.error(error.message || "Failed to create transaction", { position: "top-center" });

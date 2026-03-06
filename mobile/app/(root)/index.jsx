@@ -13,10 +13,9 @@ import { toast } from 'sonner';
 import { SignOutButton } from '../../components/SignOutButton';
 
 export default function Page() {
-  const { user } = useUser();
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
-
+  const { user } = useUser();
   const { transactions, summary, isLoading, loadData, deleteTransaction } = useTransactions(user.id)
 
 
@@ -27,8 +26,8 @@ export default function Page() {
   };
 
 
-  useEffect(() => {
-    loadData()
+  useEffect(async () => {
+    await loadData();
   }, [loadData]);
 
   useFocusEffect(
