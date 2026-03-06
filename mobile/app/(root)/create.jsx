@@ -73,7 +73,8 @@ import {
         }
   
         toast.success("Transaction created successfully", { position: "top-center" });
-        router.back();
+        // router.back();
+        router.push("/");
       } catch (error) {
         toast.error(error.message || "Failed to create transaction", { position: "top-center" });
         console.error("Error creating transaction:", error);
