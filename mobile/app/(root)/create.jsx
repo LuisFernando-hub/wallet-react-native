@@ -89,7 +89,7 @@ import { useTransactions } from "../../hooks/useTransactions";
       <View style={styles.container}>
         {/* HEADER */}
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.push("/")}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={24} color={COLORS.text} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>New Transaction</Text>
