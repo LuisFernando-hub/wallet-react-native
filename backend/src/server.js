@@ -23,7 +23,7 @@ app.use((req,res,next) => {
 
 const PORT = process.env.PORT || 5001;
 
-app.get("/api/health", (req, res) => {
+app.get("/", (req, res) => {
     res.status(200).json({
         status: "ok"
     });
@@ -31,20 +31,8 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/transactions", transactionsRoute);
 
-let isConnected = false;
-app.use(async (req, res, next) => {
-    if (!isConnected) {
-        await initDB();
-        isConnected = true;
-    }
-    next();
-});
-
-if (process.env.NODE_ENV !== "production") {
-    const PORT = process.env.PORT || 5001;
-    initDB().then(() => {
-        app.listen(PORT, () => console.log("Server local na porta", PORT));
+initDB().then(() => {
+    app.listen(PORT, () => {
+        console.log("Server is running on port", PORT);
     });
-}
-
-export default app;
+})
