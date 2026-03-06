@@ -84,6 +84,10 @@ export default function Page() {
         
         <View style={styles.transactionsHeaderContainer}>
           <Text style={styles.sectionTitle}>Recent Transactions</Text>
+          <TouchableOpacity style={styles.addButton} onPress={onRefresh}>
+              <Ionicons name="push" size={20} color="#FFF"/>
+              <Text style={styles.addButtonText}>Atualizar</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
