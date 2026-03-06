@@ -18,24 +18,21 @@ export default function Page() {
   const { user } = useUser();
   const { transactions, summary, isLoading, loadData, deleteTransaction, fetchSummary } = useTransactions(user.id)
 
-
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await loadData();
+    await Promise.all([loadData(), fetchSummary()]);
     setRefreshing(false);
-  };
+  }, [loadData, fetchSummary]);
 
-
-  useEffect( () => {
+  useEffect(() => {
     loadData();
     fetchSummary();
-  }, [loadData]);
+  }, [loadData, fetchSummary]);
 
   useFocusEffect(
     useCallback(() => {
       onRefresh();
-      fetchSummary();
-    }, [])
+    }, [onRefresh])
   );
 
 
