@@ -17,9 +17,7 @@ const app = express();
 // const PORT = process.env.PORT || 5001;
 
 app.get("/", (req, res) => {
-    res.status(200).json({
-        status: "ok"
-    });
+    return "ok";
 })
 
 // app.use("/api/transactions", transactionsRoute);
