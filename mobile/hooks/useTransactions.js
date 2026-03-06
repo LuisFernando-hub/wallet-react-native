@@ -70,6 +70,7 @@ export const useTransactions = (userId) => {
         summary,
         isLoading,
         loadData,
-        deleteTransaction
+        deleteTransaction,
+        fetchSummary
     }
 }
