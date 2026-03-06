@@ -41,14 +41,14 @@ export const useTransactions = (userId) => {
     const loadData = useCallback(async () => {
         if (!userId) return;
 
-        // setIsLoading(true);
+        setIsLoading(true);
 
         try {
             await Promise.all([fetchTransactions(), fetchSummary()]);
         } catch (error) {
             console.error("Error loading data:", error);
         } finally {
-            // setIsLoading(false);
+            setIsLoading(false);
         }
     }, [fetchTransactions, fetchSummary, userId]);
 
