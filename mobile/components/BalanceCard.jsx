@@ -3,10 +3,20 @@ import { styles } from "../assets/styles/home.styles";
 import { COLORS } from "../constants/colors";
 
 export const BalanceCard = ({ summary }) => {
+  const balance = Number(summary?.balance ?? 0).toFixed(2);
+
+  const balance2 = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+}).format(summary?.balance || 0)
+
   return (
     <View style={styles.balanceCard}>
       <Text style={styles.balanceTitle}>Total Balance</Text>
       <Text style={styles.balanceAmount}>₾{Number(summary?.balance ?? 0).toFixed(2)}</Text>
+      <Text style={styles.balanceAmount}>₾{summary?.balance}</Text>
+      <Text style={styles.balanceAmount}>₾{balance}</Text>
+      <Text style={styles.balanceAmount}>₾{balance2}</Text>
       <View style={styles.balanceStats}>
         <View style={styles.balanceStatItem}>
           <Text style={styles.balanceStatLabel}>Income</Text>
