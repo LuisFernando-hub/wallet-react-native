@@ -17,8 +17,8 @@ export const useTransactions = (userId) => {
     
     const fetchTransactions = useCallback(async() => {
         try {
-            console.log('entrou aqui tbm');
             const response = await fetch(`${API_URL}/transactions/${userId}`)
+            console.log(response);
             const data = await response.json();
             setTransactions(data);
         } catch (error) {
@@ -28,20 +28,11 @@ export const useTransactions = (userId) => {
 
     const fetchSummary = useCallback(async() => {
         try {
+            console.log(userId);
             const response = await fetch(`${API_URL}/transactions/summary/${userId}`)
             const data = await response.json();
             setSummary(data);
         } catch (error) {
-            console.error("Error fetching summary:", error);
-        }
-    }, [userId]);
-
-    const filterMonthSummary = useCallback(async (month) => {
-        try {
-            const response = await fetch(`${API_URL}/transactions/summary/${userId}?month=${month}`);
-            const data = await response.json();
-            setSummary(data);
-        } catch(error) {
             console.error("Error fetching summary:", error);
         }
     }, [userId]);
@@ -60,11 +51,11 @@ export const useTransactions = (userId) => {
         }
     }, [fetchTransactions, fetchSummary, userId]);
 
-    const filterMonthTransactions = useCallback(async (month) => {
+    const filterMonthTransactions = async (async (userId, month) => {
         try {
-            const response = await fetch(`${API_URL}/transactions/${userId}?month=${month}`);
+            const response = await fetch(`${API_URL}/transactions?user_id=${userId}&month=${month}`);
             const data = await response.json();
-            setTransactions(data);
+            setTransactions(data.transactions);
         } catch(error) {
             console.error("Error fetching transactions:", error);
         }
@@ -89,7 +80,6 @@ export const useTransactions = (userId) => {
         isLoading,
         loadData,
         deleteTransaction,
-        filterMonthTransactions,
-        filterMonthSummary
+        filterMonthTransactions
     }
 }
