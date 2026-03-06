@@ -11,10 +11,13 @@ export const SignOutButton = () => {
 
   
   const handleSignOut = async () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
-      { text: "Logout", style: "destructive", onPress: signOut },
-      { text: "Cancel", style: "cancel"}
-    ])
+     const ok = window.confirm(
+      "Are you sure you want to logout?"
+    );
+
+    if (ok) {
+      signOut();
+    }
   }
   return (
     <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>

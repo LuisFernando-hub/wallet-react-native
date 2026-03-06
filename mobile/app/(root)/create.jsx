@@ -14,6 +14,7 @@ import {
   import { styles } from "../../assets/styles/create.styles";
   import { COLORS } from "../../constants/colors";
   import { Ionicons } from "@expo/vector-icons";
+  import { toast } from "sonner";
   
   const CATEGORIES = [
     { id: "food", name: "Food & Drinks", icon: "fast-food" },
@@ -37,13 +38,13 @@ import {
   
     const handleCreate = async () => {
       // validations
-      if (!title.trim()) return Alert.alert("Error", "Please enter a transaction title");
+      if (!title.trim()) return toast.error("Please enter a transaction title", { position: "top-center" });
       if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-        Alert.alert("Error", "Please enter a valid amount");
+        toast.error("Please enter a valid amount", { position: "top-center" });
         return;
       }
   
-      if (!selectedCategory) return Alert.alert("Error", "Please select a category");
+      if (!selectedCategory) return toast.error("Please select a category", { position: "top-center" });
   
       setIsLoading(true);
       try {
@@ -71,10 +72,10 @@ import {
           throw new Error(errorData.error || "Failed to create transaction");
         }
   
-        Alert.alert("Success", "Transaction created successfully");
+        toast.success("Transaction created successfully", { position: "top-center" });
         router.back();
       } catch (error) {
-        Alert.alert("Error", error.message || "Failed to create transaction");
+        toast.error(error.message || "Failed to create transaction", { position: "top-center" });
         console.error("Error creating transaction:", error);
       } finally {
         setIsLoading(false);
@@ -136,7 +137,7 @@ import {
   
           {/* AMOUNT CONTAINER */}
           <View style={styles.amountContainer}>
-            <Text style={styles.currencySymbol}>$</Text>
+            <Text style={styles.currencySymbol}>₾</Text>
             <TextInput
               style={styles.amountInput}
               placeholder="0.00"

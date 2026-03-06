@@ -1,15 +1,16 @@
 import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
-import { Link, useRouter } from 'expo-router'
+import { Link, useFocusEffect, useRouter } from 'expo-router'
 import { Alert, FlatList, Image, RefreshControl, Text, TouchableOpacity, View } from 'react-native'
-import { SignOutButton } from '@/components/SignOutButton'
 import { useTransactions } from '../../hooks/useTransactions';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PageLoader from '../../components/PageLoader';
 import { styles } from '../../assets/styles/home.styles';
 import { Ionicons } from "@expo/vector-icons";
 import { BalanceCard } from '../../components/BalanceCard';
 import { TransactionItem } from '../../components/TransactionItem';
 import NoTransactionsFound from '../../components/NoTransactionsFound';
+import { toast } from 'sonner';
+import { SignOutButton } from '../../components/SignOutButton';
 
 export default function Page() {
   const { user } = useUser();
@@ -30,20 +31,25 @@ export default function Page() {
     loadData()
   }, [loadData]);
 
+  useFocusEffect(
+    useCallback(() => {
+      onRefresh();
+    }, [])
+  );
+
+
   const handleDelete = (id) => {
-    Alert.alert("Delete Transaction", "Are you sure you want to delete this transaction?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: () => deleteTransaction(id) },
-    ]);
+    const ok = window.confirm(
+      "Are you sure you want to delete this transaction?"
+    );
+
+    if (ok) {
+      deleteTransaction(id);
+    }
   };
 
 
   if(isLoading && !refreshing) return <PageLoader/>
-
-
-  console.log("userId", user.id);
-  console.log("transactions", transactions);
-  console.log("summary", summary);
 
   return (
     <View style={styles.container}>
@@ -80,8 +86,6 @@ export default function Page() {
         </View>
       </View>
 
-      {/* FlatList is a performant way to render long lists in React Native. */}
-      {/* it renders items lazily — only those on the screen. */}
       <FlatList
         style={styles.transactionsList}
         contentContainerStyle={styles.transactionsListContent}

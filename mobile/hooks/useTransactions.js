@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { Alert } from "react-native";
 import { API_URL } from "../constants/api";
+import { toast } from "sonner";
 
 
 // const API_URL = "https://wallet-api-ufnl.onrender.com/api";
@@ -40,14 +41,14 @@ export const useTransactions = (userId) => {
     const loadData = useCallback(async () => {
         if (!userId) return;
 
-        setIsLoading(true);
+        // setIsLoading(true);
 
         try {
             await Promise.all([fetchTransactions(), fetchSummary()]);
         } catch (error) {
             console.error("Error loading data:", error);
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     }, [fetchTransactions, fetchSummary, userId]);
 
@@ -57,10 +58,10 @@ export const useTransactions = (userId) => {
             if (!response.ok) throw new Error("Failed to delete transaction");
 
             loadData();
-            Alert.alert("Success", "Transaction deleted successfully");
+            toast.success("Transaction deleted successfully", { position: "top-center" });
         } catch (error) {
             console.error("Error loading data:", error);
-            Alert.alert("Error", error.message);
+            toast.error(error.message, { position: "top-center" });
         } 
     };
 

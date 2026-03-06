@@ -3,6 +3,7 @@ import { ClerkProvider } from '@clerk/clerk-expo'
 import { Slot } from 'expo-router'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
 import { StatusBar } from "expo-status-bar";
+import { Toaster } from "sonner";
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -17,6 +18,7 @@ export default function RootLayout() {
       <SafeScreen>
         <Slot />
     </SafeScreen>
+    <Toaster />
     <StatusBar style="dark"/>
   </ClerkProvider>
 );
